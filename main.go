@@ -1,9 +1,22 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+
+	"gopkg.in/yaml.v2"
+)
+
+type TaskFile struct {
+	Version string
+	Tasks   []string
+}
 
 func main() {
-	var todos [5]string
-	todos[1] = "asdf"
+	todos, err := yaml.Marshal("test")
+	if err != nil {
+		log.Fatal(err)
+	}
 	fmt.Println(todos)
+
 }
