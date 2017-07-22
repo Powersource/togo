@@ -13,10 +13,16 @@ type TaskFile struct {
 }
 
 func main() {
-	todos, err := yaml.Marshal("test")
+	todos, err := yaml.Marshal("%} \n-\ntest")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(todos)
+	fmt.Println("Marshalled:", todos)
+	var text string
+	err = yaml.Unmarshal(todos, &text)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Unmarshalled:", text)
 
 }
