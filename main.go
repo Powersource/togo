@@ -2,27 +2,47 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"io/ioutil"
 
 	"gopkg.in/yaml.v2"
 )
 
-type TaskFile struct {
+var fileName = "togo.yaml"
+
+type taskFile struct {
 	Version string
 	Tasks   []string
 }
 
 func main() {
-	todos, err := yaml.Marshal("%} \n-\ntest")
-	if err != nil {
-		log.Fatal(err)
+	tasks := []string{
+		"water the plants",
+		"buy groceries",
+		"run bsd",
 	}
-	fmt.Println("Marshalled:", todos)
-	var text string
-	err = yaml.Unmarshal(todos, &text)
-	if err != nil {
-		log.Fatal(err)
+	defaultTogo := taskFile{
+		Version: "0.1",
+		Tasks:   tasks,
 	}
-	fmt.Println("Unmarshalled:", text)
 
+	todos, err := yaml.Marshal(defaultTogo)
+	check(err)
+	fmt.Println("Marshalled:", string(todos))
+
+	err = ioutil.WriteFile(fileName, todos, 0644)
+	check(err)
+
+	fileContents, err := ioutil.ReadFile(fileName)
+	check(err)
+
+	var readTodos taskFile
+	err = yaml.Unmarshal(fileContents, &readTodos)
+	check(err)
+	fmt.Println("Unmarshalled:", readTodos.Tasks[0])
+}
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
 }
