@@ -11,11 +11,13 @@ var fileName = "togo.yaml"
 
 type taskFile struct {
 	Version string
-	Tasks   []string
+	Tasks   taskList
 }
 
+type taskList []string
+
 func main() {
-	tasks := []string{
+	tasks := taskList{
 		"water the plants",
 		"buy groceries",
 		"run bsd",
@@ -32,13 +34,20 @@ func main() {
 	err = ioutil.WriteFile(fileName, todos, 0644)
 	check(err)
 
+	for _, el := range readTogoFile() {
+		fmt.Println(el)
+	}
+}
+
+func readTogoFile() taskList {
 	fileContents, err := ioutil.ReadFile(fileName)
 	check(err)
 
 	var readTodos taskFile
 	err = yaml.Unmarshal(fileContents, &readTodos)
 	check(err)
-	fmt.Println("Unmarshalled:", readTodos.Tasks[0])
+
+	return readTodos.Tasks
 }
 
 func check(e error) {
